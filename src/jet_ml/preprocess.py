@@ -1,23 +1,7 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-print("Packages loaded!!!")
-
-
-# Set the style
-
-# Set cyberpunk style colors and theme
-plt.style.use('dark_background')
-neon_pink = '#FF006E'  
-neon_blue = '#00FFF5'
-neon_cyan = '#00FF8C'
-neon_purple = '#8A2BE2'
-neon_yellow = '#FFD700'
-neon_green = '#39FF14'
-background_color = '#0D0221'
-
-
+from .plots.plot_configs import *
+from sklearn.model_selection import train_test_split
+from .plots.plots import *
 
 
 
@@ -75,66 +59,25 @@ class DataFrame(pd.DataFrame):
                 
     def plot_count_values(self, column: str, size: tuple = (10, 7)):
         """Plots the distribution of a column in the DataFrame."""
-        fig, ax = plt.subplots(figsize=size)
-        fig.patch.set_facecolor(background_color)
-        ax.set_facecolor(background_color)
-        ax.grid(True, linestyle='-', alpha=0.3, color=neon_cyan, linewidth=0.8)
-        
-        sns.countplot(x=column, data=self, color=neon_blue, edgecolor=neon_purple, linewidth=2.3, alpha=0.8)
-        
-        ax.set_title(f"Distribution of {column}", fontsize=18, color=neon_yellow, pad=20, weight='bold')
-        ax.set_xlabel(column, fontsize=16, color=neon_green, labelpad=15, weight='bold')
-        ax.set_ylabel("Count", fontsize=16, color=neon_green, labelpad=15, weight='bold')
-        
-        for spine in ax.spines.values():
-            spine.set_color(neon_purple)
-            spine.set_linewidth(2.5)
-        
-        ax.tick_params(colors=neon_blue, labelsize=14)
-        for line in ax.lines:
-            line.set_path_effects([plt.matplotlib.patheffects.withStroke(linewidth=3, foreground=background_color)])
-        
-        plt.tight_layout()
-        plt.show()
+        plot_count_values(self, column, size)
 
     def plot_distribution(self, column: str, size: tuple = (10, 7)):
         """Plots the distribution of a column in the DataFrame."""
-        fig, ax = plt.subplots(figsize=size)
-        fig.patch.set_facecolor(background_color)
-        ax.set_facecolor(background_color)
-        sns.histplot(self[column], kde=True, color=neon_blue, edgecolor=neon_purple, linewidth=2.3, alpha=0.8)
-        for spine in ['top', 'bottom', 'left', 'right']:
-            plt.gca().spines[spine].set_color(neon_purple)
-            plt.gca().spines[spine].set_linewidth(2.5)
-        plt.show()
+        plot_distribution(self, column, size)
+        
 
     def plot_null_values(self, heatmap: bool = True, size: tuple = (10, 7)):
         """Plots a heatmap showing the distribution of null values in the DataFrame."""
         if heatmap:
-            fig, ax = plt.subplots(figsize=size)
-            ax.set_facecolor(background_color)
-            
-            null_mask = self.isna()
-            print(null_mask)
-            
-            sns.heatmap(null_mask, cmap=['black', neon_pink], cbar_kws={'label': 'Is Null'}, yticklabels=False)
-            
-            plt.title('Null Values Distribution', fontsize=18, color=neon_yellow, pad=20, weight='bold')
-            plt.xlabel('Features', fontsize=16, color=neon_green, labelpad=15, weight='bold')
-            plt.ylabel('Records', fontsize=16, color=neon_green, labelpad=15, weight='bold')
-            plt.xticks(rotation=45, ha='right', color=neon_blue)
-            plt.tight_layout()
-            plt.show()
+            plot_null_values_heatmap(self, size)
         else:
-            fig, ax = plt.subplots(figsize=size)
-            ax.set_facecolor(background_color)  
-            plt.bar(range(len(self.columns)), self.isna().sum(), color=neon_blue)
-            plt.xticks(range(len(self.columns)), self.columns, rotation=45, ha='right')
-            plt.ylabel('Number of Null Values')
-            for spine in ['top', 'bottom', 'left', 'right']:
-                plt.gca().spines[spine].set_color(neon_purple)
-                plt.gca().spines[spine].set_linewidth(2.5)
-            plt.show()
+            plot_null_values_bar(self, size)
+
+    def train_test_split(self, test_size: float = 0.2, random_state: int = 42):
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self, test_size=test_size, random_state=random_state)
+        return self.X_train, self.X_test, self.y_train, self.y_test
+
+
 
 def read_csv(path: str):
     return DataFrame(pd.read_csv(path))
