@@ -50,3 +50,20 @@ Jet ML brings together data preprocessing, machine learning, and experiment trac
 - Streamlined workflow from data to deployment
 - Built-in versioning and reproducibility
 - Extensible architecture for custom implementations
+
+---
+# 📦 Install JetML from GitHub
+
+You can install `jetml` directly from the GitHub repository using `pip`. This is ideal if the package hasn't been published to PyPI yet.
+
+## ✅ Requirements
+
+- Python 3.8 or higher  
+- Up-to-date pip (`pip install --upgrade pip`)
+
+## 🚀 Installation
+
+Run the following command in your terminal:
+
+```bash
+pip install git+https://github.com/Robert-Gomez-AI/jet_ml.git
