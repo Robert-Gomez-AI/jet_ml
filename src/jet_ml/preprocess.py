@@ -31,7 +31,7 @@ class DataFrame(pd.DataFrame):
         self.n = self.shape[0]
         self.p = self.shape[1]
 
-    def null_values_treatment(self, method: str):
+    def null_values_treatment(self, method: str, column: list[str] = None):
         """
         Treats null values in the DataFrame based on the specified method.
 
@@ -45,17 +45,34 @@ class DataFrame(pd.DataFrame):
         Returns:
             DataFrame: Returns self after treating null values.
         """
-        if method == "drop":
-            self._update_inplace(self.drop(self[self.isna().any(axis=1)].index))
-        elif method == "mean":
-            self._update_inplace(self.fillna(self.mean()))
-        elif method == "median":
-            self._update_inplace(self.fillna(self.median()))
-        elif method == "mode":
-            self._update_inplace(self.fillna(self.mode().iloc[0]))
-            print(self)
-            print(self.isna().sum())
-        return self
+        if column is None:
+            try:
+                if method == "drop":
+                    self._update_inplace(self.drop(self[self.isna().any(axis=1)].index))
+                elif method == "mean":
+                    self._update_inplace(self.fillna(self.mean()))
+                elif method == "median":
+                    self._update_inplace(self.fillna(self.median()))
+                elif method == "mode":
+                    self._update_inplace(self.fillna(self.mode().iloc[0]))
+                    print(self)
+                    print(self.isna().sum())
+                return self
+            except Exception as e:
+                print(f"Error: {e}")
+                return self
+        else:
+            for col in column:
+                if method == "drop":
+                    self._update_inplace(self.drop(self[self[col].isna()].index))
+                elif method == "mean":
+                    self._update_inplace(self.fillna(self[col].mean()))
+                elif method == "median":
+                    self._update_inplace(self.fillna(self[col].median()))
+                elif method == "mode":
+                    self._update_inplace(self.fillna(self[col].mode().iloc[0]))
+                return self
+                
     def plot_count_values(self, column: str, size: tuple = (10, 7)):
         """Plots the distribution of a column in the DataFrame."""
         fig, ax = plt.subplots(figsize=size)
