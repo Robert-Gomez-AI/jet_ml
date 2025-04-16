@@ -2,3 +2,5 @@ src/jet_ml/__pycache__/
 *.ipynb
 *.csv  
 Data/
+__pycache__/ 
+*/__pycache__/
